@@ -126,7 +126,7 @@ public class MainFragment extends Fragment implements
 
 
         View layout = (View) view.findViewById(R.id.mainLayout);
-        int setColor = Color.parseColor("#EB9532"); //""7F2D5A 820ecf 3498db
+        int setColor = Color.parseColor("#5AAD6A"); //""7F2D5A 820ecf 3498db
         int notSetColor = Color.parseColor("#34495e");
         int color = i == 0 ? notSetColor : setColor;
         int fromColor;
