@@ -41,6 +41,9 @@ public class AlarmIsSetFragment extends Fragment
 
         remainingView = (TextView) view.findViewById(R.id.remainingView);
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
+        // java.lang.IndexOutOfBoundsException: setSpan
+//        timePicker.setSaveFromParentEnabled(false);
+//        timePicker.setSaveEnabled(true);
 
         timePicker.setIs24HourView(true);
 

@@ -27,7 +27,6 @@ public class RingingPagerFragment extends Fragment implements ViewPager.OnPageCh
     RingingSectionsPagerAdapter mRingingSectionsPagerAdapter;
     ViewPager mViewPager;
     AlarmStore alarmStore;
-    RingingFragment ringingFragment;
     Boolean snoozingStarted = false;
 
     public RingingPagerFragment() {
@@ -44,7 +43,6 @@ public class RingingPagerFragment extends Fragment implements ViewPager.OnPageCh
 
         alarmStore = new AlarmStore(getActivity().getApplicationContext());
 
-        ringingFragment = new RingingFragment();
 
         mRingingSectionsPagerAdapter = new RingingSectionsPagerAdapter(getFragmentManager());
 
@@ -70,7 +68,8 @@ public class RingingPagerFragment extends Fragment implements ViewPager.OnPageCh
 
     @Override
     public void onPageScrolled(int i, float v, int i2) {
-//        Fragment f = (Fragment) mRingingSectionsPagerAdapter.instantiateItem(mViewPager, 1);
+        Fragment ringingFragment = mRingingSectionsPagerAdapter.getItem(1);
+
         View view = ringingFragment.getView();
         float alpha;
         if (i == 0) {
@@ -88,7 +87,9 @@ public class RingingPagerFragment extends Fragment implements ViewPager.OnPageCh
                 snoozingStarted = true;
             }
         }
-        view.setAlpha(alpha);
+        if (view != null) {
+            view.setAlpha(alpha);
+        }
     }
 
     @Override
@@ -134,7 +135,7 @@ public class RingingPagerFragment extends Fragment implements ViewPager.OnPageCh
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 1) {
-                return ringingFragment;
+                return new RingingFragment();
             } else {
                 return new TransparentFragment();
             }
