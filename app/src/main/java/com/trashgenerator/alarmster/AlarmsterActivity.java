@@ -1,6 +1,7 @@
 package com.trashgenerator.alarmster;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.Ringtone;
@@ -23,8 +24,6 @@ public class AlarmsterActivity extends Activity {
     AlarmStore alarmStore;
     static final String ACTION_RING = "com.trashgenerator.alarmster.RING";
     static final int NOTIFICATION_ID = 1;
-    MainFragment mainFragment;
-    RingingPagerFragment ringingPagerFragment;
     Ringtone ringtone;
 
 
@@ -32,35 +31,26 @@ public class AlarmsterActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ala);
+
         if (savedInstanceState == null) {
-
-            alarmStore = new AlarmStore(getApplicationContext());
-            mainFragment = new MainFragment();
-            ringingPagerFragment = new RingingPagerFragment();
-
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, mainFragment)
-                    .add(R.id.container, ringingPagerFragment)
-                    .hide(ringingPagerFragment)
-                    .commit();
-
         }
+
+        MainFragment mainFragment = new MainFragment();
+        RingingPagerFragment ringingPagerFragment = new RingingPagerFragment();
+
+        getFragmentManager().beginTransaction()
+                .add(R.id.container, mainFragment, "mainFragment")
+                .add(R.id.container, ringingPagerFragment, "ringingPagerFragment")
+                .hide(ringingPagerFragment)
+                .commit();
+
+        alarmStore = new AlarmStore(getApplicationContext());
         EventBus.getDefault().register(this);
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
-
-
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-//        getFragmentManager()
-//                .beginTransaction()
-//                .add(R.id.container, ringingPagerFragment)
-//                .commit();
 
-    }
 
     @Override
     protected void onPause() {
@@ -137,16 +127,6 @@ public class AlarmsterActivity extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-//        if (alarmStore.getState() == AlarmStore.STATE_RINGING) {
-//            getFragmentManager().beginTransaction()
-//                    .remove(ringingPagerFragment)
-//                    .commit();
-//        }
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         Utils.logE("onDestroy", "");
@@ -175,6 +155,7 @@ public class AlarmsterActivity extends Activity {
         Utils.logE("AlarmsterActivity", e.toString());
         stop();
         setScreenOff();
+        Fragment ringingPagerFragment = getFragmentManager().findFragmentByTag("ringingPagerFragment");
         getFragmentManager().beginTransaction()
                 .hide(ringingPagerFragment)
                 .commit();
@@ -186,6 +167,7 @@ public class AlarmsterActivity extends Activity {
         Utils.logE("AlarmsterActivity", e.toString());
         play();
         setScreenOn();
+        Fragment ringingPagerFragment = getFragmentManager().findFragmentByTag("ringingPagerFragment");
         getFragmentManager().beginTransaction()
                 .show(ringingPagerFragment)
                 .commit();
@@ -202,6 +184,7 @@ public class AlarmsterActivity extends Activity {
 
     public void onEvent(StartSnoozing e) {
         Utils.logE("AlarmsterActivity", e.toString());
+        Fragment mainFragment = getFragmentManager().findFragmentByTag("mainFragment");
         getFragmentManager().beginTransaction()
                 .hide(mainFragment)
                 .commit();
@@ -209,6 +192,7 @@ public class AlarmsterActivity extends Activity {
 
     public void onEvent(CancelSnoozing e) {
         Utils.logE("AlarmsterActivity", e.toString());
+        Fragment mainFragment = getFragmentManager().findFragmentByTag("mainFragment");
         getFragmentManager().beginTransaction()
                 .show(mainFragment)
                 .commit();
