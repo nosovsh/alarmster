@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Alarmster</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="alarm_is_set">Будильник включен</string>
+    <string name="alarm_is_not_set">Будильник выключен</string>
+    <string name="alarm_is_ringing">Доброе утро</string>
+    <string name="swipe_to_disable">Выключить</string>
+    <string name="swipe_to_enable">Включить</string>
+    <string name="swipe_to_snooze">Отложить</string>
+    <string name="title_activity_ringing">RingingActivity</string>
+    <string name="hello_blank_fragment1">Hello blank fragment1</string>
+    <string name="remaining">Осталось <xliff:g id="hours">%d</xliff:g>ч <xliff:g id="minutes">%d</xliff:g>м</string>
+    <string name="alarm_snoozed">Будильник зазвонит еще раз через 5 минут</string>
+    <string name="notification_alarm_is_snoozed">Будильник скоро опять позвонит</string>
+    <string name="notification_tap_to_cancel">Нажмите, что бы отключить</string>
+
+
+
+</resources>
