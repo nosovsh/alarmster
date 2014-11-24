@@ -2,12 +2,14 @@ package com.trashgenerator.alarmster;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.WindowManager;
 
 import com.trashgenerator.alarmster.events.AlarmDisabled;
@@ -25,29 +27,45 @@ public class AlarmsterActivity extends Activity {
     static final String ACTION_RING = "com.trashgenerator.alarmster.RING";
     static final int NOTIFICATION_ID = 1;
     Ringtone ringtone;
+    Vibrator vibrator;
+    long[] vibratePattern = {0, 1000, 1000};
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.logE("AlarmsterActivity", "onCreate");
         setContentView(R.layout.activity_ala);
 
         if (savedInstanceState == null) {
+            MainFragment mainFragment = new MainFragment();
+            RingingPagerFragment ringingPagerFragment = new RingingPagerFragment();
+
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, mainFragment, "mainFragment")
+                    .add(R.id.container, ringingPagerFragment, "ringingPagerFragment")
+                    .hide(ringingPagerFragment)
+                    .commit();
+        } else {
+            Utils.logE("savedInstanceState", savedInstanceState.toString());
+
+            Fragment ringingPagerFragment = getFragmentManager().findFragmentByTag("ringingPagerFragment");
+            getFragmentManager().beginTransaction()
+                    .hide(ringingPagerFragment)
+                    .commit();
+
         }
 
-        MainFragment mainFragment = new MainFragment();
-        RingingPagerFragment ringingPagerFragment = new RingingPagerFragment();
 
-        getFragmentManager().beginTransaction()
-                .add(R.id.container, mainFragment, "mainFragment")
-                .add(R.id.container, ringingPagerFragment, "ringingPagerFragment")
-                .hide(ringingPagerFragment)
-                .commit();
+        getFragmentManager().findFragmentByTag("mainFragment");
 
         alarmStore = new AlarmStore(getApplicationContext());
         EventBus.getDefault().register(this);
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+        vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+
     }
 
 
@@ -198,18 +216,20 @@ public class AlarmsterActivity extends Activity {
                 .commit();
     }
 
-
     private void play() {
         if (ringtone != null && !ringtone.isPlaying()) {
             ringtone.play();
         }
+        if (vibrator != null)
+            vibrator.vibrate(vibratePattern, 0);
     }
 
     private void stop () {
         if (ringtone != null)
             ringtone.stop();
+        if (vibrator != null)
+            vibrator.cancel();
     }
-
     public void setScreenOn() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -222,6 +242,11 @@ public class AlarmsterActivity extends Activity {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 

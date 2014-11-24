@@ -8,6 +8,8 @@ import android.app.FragmentManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Parcelable;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +46,7 @@ public class MainFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Utils.logE("MainFragment", "onCreateView");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -58,6 +61,13 @@ public class MainFragment extends Fragment implements
 
         alarmStore = new AlarmStore(getActivity().getApplicationContext());
 
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         if (alarmStore.getState() == AlarmStore.STATE_ENABLED) {
             if (mViewPager.getCurrentItem() != 1) {
                 mViewPager.setCurrentItem(1);
@@ -68,7 +78,6 @@ public class MainFragment extends Fragment implements
             }
         }
 
-        return view;
     }
 
     @Override
@@ -145,11 +154,13 @@ public class MainFragment extends Fragment implements
      * A {@link android.support.v13.app.FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
+
+
 
         @Override
         public Fragment getItem(int position) {
@@ -165,6 +176,19 @@ public class MainFragment extends Fragment implements
         @Override
         public int getCount() {
             return 2;
+        }
+
+
+        @Override
+        public Parcelable saveState() {
+            Utils.logE("MainFragment", "saveState");
+            return super.saveState();
+        }
+
+        @Override
+        public void restoreState(Parcelable state, ClassLoader loader) {
+            Utils.logE("MainFragment", "restoreState");
+            super.restoreState(state, loader);
         }
 
         @Override
